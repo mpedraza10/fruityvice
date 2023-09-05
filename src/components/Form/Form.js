@@ -30,6 +30,20 @@ const Form = () => {
 		setSubmitted(true);
 	};
 
+	const handleClear = (e) => {
+		// Prevent browser default submit behavior
+		e.preventDefault();
+
+		setSubmitted(false);
+		setFilename("");
+		setFilter("all");
+		setAllSelected(true);
+		setFamilySelected(false);
+		setGenusSelected(false);
+		setOrderSelected(false);
+		setData([]);
+	};
+
 	const handleFilterChange = (selectedFilter) => {
 		// Update the selected state based on the clicked filter
 		if (selectedFilter === "all") {
@@ -183,10 +197,21 @@ const Form = () => {
 					)}
 				</div>
 			</div>
-			<div>
-				<button type="submit">Submit</button>
+			<div className="btns-container">
+				<button className="button submit" type="submit">
+					Submit
+				</button>
+				<button className="button secondary" onClick={handleClear}>
+					Clear
+				</button>
+			</div>
+			<div className="download-btn-container">
 				{data.length > 0 && (
-					<CSVLink data={data} filename={`${filename}.csv`}>
+					<CSVLink
+						className="button download"
+						data={data}
+						filename={`${filename}.csv`}
+					>
 						Download CSV
 					</CSVLink>
 				)}

@@ -9,39 +9,86 @@ form {
 }
 
 form h1 {
-    text-align: center;
+	text-align: center;
 }
 
 form div {
-    margin-bottom: 1rem;   
+	margin-bottom: 1rem;
 }
 
 form label {
-    display: block;
-    width: 100%;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+	display: block;
+	width: 100%;
+	font-weight: bold;
+	margin-bottom: 0.5rem;
 }
 
 form input {
-    display: block;
-    width: 100%;
-    padding: 0.5rem;
+	display: block;
+	width: 100%;
+	padding: 0.5rem;
 }
 
 form .filter-options {
-    display: flex; 
-    align-items: center;
-    justify-content: space-around;   
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
 }
 
 form .filter-options div {
-    border-left: 1px solid black;
-    width: 25%;
-    padding: 0.5rem;
-    text-align: center;
+	border-left: 1px solid black;
+	width: 25%;
+	padding: 0.5rem;
+	text-align: center;
+    cursor: pointer;
 }
 
 form .filter-options div.selected {
-    background-color: gainsboro;
+	background-color: rgb(213, 213, 255);
+}
+
+form .btns-container {
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+form .btns-container .button {
+	padding: 0.5rem 1rem;
+	border: none;
+	text-decoration: none;
+	background-color: transparent;
+	border-radius: 6px;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+form .btns-container .button.secondary {
+	border: 1px solid blue;
+	background-color: transparent;
+	color: blue;
+}
+
+form .btns-container .button.submit {
+	background-color: blue;
+	color: white;
+}
+
+form .download-btn-container {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+form .download-btn-container .button.download {
+	padding: 0.5rem 1rem;
+	border: none;
+	text-decoration: none;
+	background-color: transparent;
+	border-radius: 6px;
+	background-color: green;
+	color: white;
+	cursor: pointer;
 }
