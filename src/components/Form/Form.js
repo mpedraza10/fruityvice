@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { CSVLink } from "react-csv";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Styles
 import "./Form.css";
@@ -11,6 +13,14 @@ const Form = () => {
 	const [filename, setFilename] = useState("");
 	const [data, setData] = useState([]);
 	const [submitted, setSubmitted] = useState(false);
+
+	// Toast
+	const notify = () =>
+		toast.success("Successful search! You can download de CSV now.");
+	const errorNotify = () =>
+		toast.error(
+			"Error! Something went wrong, be sure to select valid family, order or genus."
+		);
 
 	// Filter state
 	const [filter, setFilter] = useState("all");
@@ -24,9 +34,10 @@ const Form = () => {
 		// Prevent browser default submit behavior
 		e.preventDefault();
 
-		console.log(filename);
-		console.log(filter);
+		// Reset data state to be empty in case we are submitting again
+		setData([]);
 
+		// Changhe state to start the request to the backend
 		setSubmitted(true);
 	};
 
@@ -109,8 +120,9 @@ const Form = () => {
 				}));
 
 				setData(formattedData);
+				notify();
 			} catch (error) {
-				console.log(error);
+				errorNotify();
 			}
 		};
 
@@ -216,6 +228,7 @@ const Form = () => {
 					</CSVLink>
 				)}
 			</div>
+			<ToastContainer />
 		</form>
 	);
 };
