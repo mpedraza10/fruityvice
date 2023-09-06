@@ -11,6 +11,7 @@ import "./Form.css";
 const Form = () => {
 	// State
 	const [filename, setFilename] = useState("");
+	const [specificFruit, setSpecificFruit] = useState("");
 	const [data, setData] = useState([]);
 	const [submitted, setSubmitted] = useState(false);
 
@@ -47,12 +48,40 @@ const Form = () => {
 
 		setSubmitted(false);
 		setFilename("");
+		setSpecificFruit("");
 		setFilter("all");
 		setAllSelected(true);
 		setFamilySelected(false);
 		setGenusSelected(false);
 		setOrderSelected(false);
 		setData([]);
+	};
+
+	const formatArray = (array) => {
+		const formattedData = array.map((item) => ({
+			Name: item.name,
+			Family: item.family,
+			Order: item.order,
+			Genus: item.genus,
+			Calories: item.nutritions.calories,
+			Fat: item.nutritions.fat,
+			Sugar: item.nutritions.sugar,
+			Carbohydrates: item.nutritions.carbohydrates,
+			Protein: item.nutritions.protein,
+		}));
+
+		return formattedData;
+	};
+
+	const formatString = (str) => {
+		// Trim and lower case the input
+		const trimmedString = str.trim().toLowerCase();
+
+		// Uppercase the first letter to give right format
+		const formattedString =
+			trimmedString.charAt(0).toUpperCase() + trimmedString.slice(1);
+
+		return formattedString;
 	};
 
 	const handleFilterChange = (selectedFilter) => {
@@ -62,6 +91,7 @@ const Form = () => {
 			setFamilySelected(false);
 			setGenusSelected(false);
 			setOrderSelected(false);
+			setSpecificFruit("");
 
 			setFilter("all");
 		} else if (selectedFilter === "genus") {
@@ -69,6 +99,7 @@ const Form = () => {
 			setAllSelected(false);
 			setFamilySelected(false);
 			setOrderSelected(false);
+			setSpecificFruit("");
 
 			setFilter("");
 		} else if (selectedFilter === "family") {
@@ -76,6 +107,7 @@ const Form = () => {
 			setAllSelected(false);
 			setGenusSelected(false);
 			setOrderSelected(false);
+			setSpecificFruit("");
 
 			setFilter("");
 		} else if (selectedFilter === "order") {
@@ -83,6 +115,7 @@ const Form = () => {
 			setAllSelected(false);
 			setFamilySelected(false);
 			setGenusSelected(false);
+			setSpecificFruit("");
 
 			setFilter("");
 		}
@@ -93,32 +126,47 @@ const Form = () => {
 		const getAllFruits = async () => {
 			let apiUrl;
 
+            // If we have a filter we give it the right format
+			let formattedFilter = "";
+			if (filter.length > 0) {
+				formattedFilter = formatString(filter);
+			}
+
 			if (familySelected) {
-				apiUrl = `http://localhost:5001/generate-csv/family/${filter}/`;
+				apiUrl = `http://localhost:5001/generate-csv/family/${formattedFilter}/`;
 			} else if (genusSelected) {
-				apiUrl = `http://localhost:5001/generate-csv/genus/${filter}/`;
+				apiUrl = `http://localhost:5001/generate-csv/genus/${formattedFilter}/`;
 			} else if (orderSelected) {
-				apiUrl = `http://localhost:5001/generate-csv/order/${filter}/`;
+				apiUrl = `http://localhost:5001/generate-csv/order/${formattedFilter}/`;
 			} else {
 				apiUrl = "http://localhost:5001/generate-csv";
 			}
 
 			try {
+				// Await response
 				const response = await axios.get(apiUrl);
 
-				// Give format to expand object content inside of element
-				const formattedData = response.data.map((item) => ({
-					Name: item.name,
-					Family: item.family,
-					Order: item.order,
-					Genus: item.genus,
-					Calories: item.nutritions.calories,
-					Fat: item.nutritions.fat,
-					Sugar: item.nutritions.sugar,
-					Carbohydrates: item.nutritions.carbohydrates,
-					Protein: item.nutritions.protein,
-				}));
+				// Initialize formatted data array to an empty array
+				let formattedData = [];
 
+				// If the user specified a fruit here we filter the fruit list
+				if (specificFruit.length > 0) {
+					// Give string the required format
+					const formattedString = formatString(specificFruit);
+
+					// Filter the array
+					const filteredArray = response.data.filter((item) => {
+						return item.name === formattedString;
+					});
+
+					// Give format to expand object content inside of element
+					formattedData = formatArray(filteredArray);
+				} else {
+					// Give format to expand object content inside of element
+					formattedData = formatArray(response.data);
+				}
+
+				// Set data with the formatted data array and notify success
 				setData(formattedData);
 				notify();
 			} catch (error) {
@@ -204,7 +252,17 @@ const Form = () => {
 						</div>
 					) : (
 						<div>
-							<label>You selected all fruits</label>
+							<div>
+								<label>You selected all fruits</label>
+							</div>
+							<div>
+								<label>Want a specific fruit? (optional)</label>
+								<input
+									type="text"
+									value={specificFruit}
+									onChange={(e) => setSpecificFruit(e.target.value)}
+								/>
+							</div>
 						</div>
 					)}
 				</div>
